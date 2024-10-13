@@ -23,15 +23,15 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonProperty("taskTitle")
+    @JsonProperty("title")
     @NotBlank(message = "Title is required")
     private String title;
 
-    @JsonProperty("taskDescription")
+    @JsonProperty("description")
     @NotBlank(message = "Description is required")
     private String description;
 
-    @JsonProperty("taskStatus")
+    @JsonProperty("status")
     @NotBlank(message = "Status is required")
     private String status;
 
