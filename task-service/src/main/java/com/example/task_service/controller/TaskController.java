@@ -1,5 +1,7 @@
 package com.example.task_service.controller;
 
+import com.example.task_service.dtos.TaskCreateDto;
+import com.example.task_service.dtos.TaskUpdateDto;
 import com.example.task_service.error_handler.exceptions.TaskNotFoundException;
 import com.example.task_service.models.Task;
 import com.example.task_service.service.TaskService;
@@ -35,14 +37,14 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@Valid @RequestBody Task task) {
-        Task createdTask = taskService.createTask(task);
+    public ResponseEntity<Task> createTask(@Valid @RequestBody TaskCreateDto taskCreateDto) {
+        Task createdTask = taskService.createTask(taskCreateDto);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @Valid @RequestBody Task updatedTask) {
-        Task task = taskService.updateTask(id, updatedTask);
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody TaskUpdateDto taskUpdateDto) {
+        Task task = taskService.updateTask(id, taskUpdateDto);
         return ResponseEntity.ok(task);
     }
 

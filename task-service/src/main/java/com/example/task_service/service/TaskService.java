@@ -1,5 +1,7 @@
 package com.example.task_service.service;
 
+import com.example.task_service.dtos.TaskCreateDto;
+import com.example.task_service.dtos.TaskUpdateDto;
 import com.example.task_service.error_handler.exceptions.TaskNotFoundException;
 import com.example.task_service.models.Task;
 import com.example.task_service.repository.TaskRepository;
@@ -25,17 +27,33 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
-    public Task createTask(Task task) {
+    public Task createTask(TaskCreateDto taskCreateDto) {
+        Task task = Task.builder()
+                .title(taskCreateDto.getTitle())
+                .description(taskCreateDto.getDescription())
+                .status(taskCreateDto.getStatus())
+                .build();
         return taskRepository.save(task);
     }
 
-    public Task updateTask(Long id, Task updatedTask) {
-        return taskRepository.findById(id).map(task -> {
-            task.setTitle(updatedTask.getTitle());
-            task.setDescription(updatedTask.getDescription());
-            task.setStatus(updatedTask.getStatus());
-            return taskRepository.save(task);
-        }).orElseThrow(() -> new TaskNotFoundException(id));
+    public Task updateTask(Long id, TaskUpdateDto taskUpdateDto) {
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+
+        // Check if fields in taskUpdateDto are non-null and update accordingly
+        if (taskUpdateDto.getTitle() != null) {
+            existingTask.setTitle(taskUpdateDto.getTitle());
+        }
+
+        if (taskUpdateDto.getDescription() != null) {
+            existingTask.setDescription(taskUpdateDto.getDescription());
+        }
+
+        if (taskUpdateDto.getStatus() != null) {
+            existingTask.setStatus(taskUpdateDto.getStatus());
+        }
+
+        return taskRepository.save(existingTask);
     }
 
     public void deleteTask(Long id) {

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 
@@ -24,15 +23,12 @@ public class Task {
     private Long id;
 
     @JsonProperty("title")
-    @NotBlank(message = "Title is required")
     private String title;
 
     @JsonProperty("description")
-    @NotBlank(message = "Description is required")
     private String description;
 
     @JsonProperty("status")
-    @NotBlank(message = "Status is required")
     private String status;
 
     private LocalDateTime updatedAt;
