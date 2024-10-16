@@ -3,11 +3,14 @@ package com.example.auth_service.exceptions;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
+
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -47,6 +50,16 @@ public class GlobalExceptionHandler {
             errorDetail.setProperty("description", "The JWT token has expired");
         }
 
+        if (exception instanceof MethodArgumentNotValidException) {
+            // Handle validation errors (e.g., invalid request payload)
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), "Validation error");
+            errorDetail.setProperty("description", exception.getMessage());
+        }
+        if (exception instanceof DuplicateKeyException) {
+            // Handle duplicate registration (email already exists)
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(409), "Duplicate resource error");
+            errorDetail.setProperty("description", "Email already registered");
+        }
         if (errorDetail == null) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
             errorDetail.setProperty("description", "Unknown internal server error.");
