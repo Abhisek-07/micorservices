@@ -1,5 +1,6 @@
 package com.example.auth_service.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +31,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<User> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
         User registeredUser = authenticationService.signup(registerUserDto);
-        return ResponseEntity.ok(registeredUser);
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

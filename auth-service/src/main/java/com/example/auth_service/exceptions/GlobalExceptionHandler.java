@@ -4,7 +4,10 @@ package com.example.auth_service.exceptions;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 
-import org.springframework.dao.DuplicateKeyException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
@@ -52,11 +55,17 @@ public class GlobalExceptionHandler {
 
         if (exception instanceof MethodArgumentNotValidException) {
             // Handle validation errors (e.g., invalid request payload)
+            MethodArgumentNotValidException ex = (MethodArgumentNotValidException) exception;
+            List<String> errorMessages = ex.getBindingResult()
+                    .getFieldErrors()
+                    .stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .collect(Collectors.toList());
+
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), "Validation error");
-            errorDetail.setProperty("description", exception.getMessage());
+            errorDetail.setProperty("description", "Validation failed for: " + String.join(", ", errorMessages));
         }
-        if (exception instanceof DuplicateKeyException) {
-            // Handle duplicate registration (email already exists)
+        if (exception instanceof DataIntegrityViolationException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(409), "Duplicate resource error");
             errorDetail.setProperty("description", "Email already registered");
         }
