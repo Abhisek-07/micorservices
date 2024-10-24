@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +31,9 @@ public class Task {
 
     @JsonProperty("status")
     private String status;
+
+    @NotNull(message = "User ID is required")
+    private Long userId;
 
     private LocalDateTime updatedAt;
 
